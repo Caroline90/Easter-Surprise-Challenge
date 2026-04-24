@@ -3,416 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Easter Bubble Shooter – Deluxe+</title>
-  <style>
-    body {
-      margin: 0;
-      background: radial-gradient(circle, #001, #000);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: #fff;
-      font-family: sans-serif;
-      overflow: hidden;
-    }
-
-    canvas {
-      background: radial-gradient(circle at center, #001a33, #000);
-      border: 1px solid #263146;
-    }
-
-    #ui {
-      position: absolute;
-      top: 10px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      width: 100%;
-      pointer-events: none;
-    }
-
-    #overlay {
-      position: absolute;
-      inset: 0;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.6);
-    }
-
-    #panel {
-      background: #111;
-      border: 2px solid #ff7eb3;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      min-width: 220px;
-    }
-
-    button {
-      padding: 10px 16px;
-      border-radius: 20px;
-      border: none;
-      background: #ff7eb3;
-      color: #fff;
-      cursor: pointer;
-      font-weight: 700;
-    }
-  </style>
+  <title>Easter Surprise Challenge</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="ui">🥚 Score: <span id="score">0</span> | Combo: <span id="combo">0</span></div>
+  <header>
+    <h1>🐣 Easter Surprise Challenge</h1>
+    <p>Click around to crack secrets, discover gifts, and unlock the final surprise!</p>
+  </header>
 
-  <div id="overlay">
-    <div id="panel">
-      <h2 id="endText"></h2>
-      <button onclick="restart()">Play Again</button>
-    </div>
-  </div>
+  <main class="grid">
+    <section class="card">
+      <h2>🥚 Crack the Easter Egg</h2>
+      <p>Tap the egg until it finally opens.</p>
+      <button id="eggButton" class="icon-btn" aria-label="Crack egg">🥚</button>
+      <p id="eggStatus" class="result">The shell is unbroken... for now.</p>
+    </section>
 
-  <canvas id="game" width="400" height="600"></canvas>
+    <section class="card">
+      <h2>🎁 Mystery Gift Box</h2>
+      <p>Open the box to reveal a hidden gift.</p>
+      <button id="boxButton" class="icon-btn" aria-label="Open mystery box">📦</button>
+      <p id="boxStatus" class="result">What could be inside?</p>
+    </section>
 
-  <script>
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-    const overlay = document.getElementById('overlay');
+    <section class="card">
+      <h2>💌 Secret Greeting Card</h2>
+      <p>Open the card and find the hidden Easter message.</p>
+      <button id="cardButton" class="icon-btn" aria-label="Open greeting card">💌</button>
+      <p id="cardStatus" class="result">A note is waiting inside...</p>
+    </section>
 
-    const R = 20;
-    const ROWS = 12;
-    const COLS = 10;
-    const BASE_COLORS = ['#ff4d4d', '#ffff66', '#66ff66', '#66ccff', '#cc66ff'];
+    <section class="card">
+      <h2>🐰 Mini Egg Hunt</h2>
+      <p>Find all hidden bunnies on the page.</p>
+      <p id="huntStatus" class="result">0 / 4 bunnies found.</p>
+      <p id="huntReward" class="hidden result">🎊 Hunt complete! You unlocked a rainbow mega-egg!</p>
+    </section>
 
-    let score = 0;
-    let combo = 0;
-    let grid = [];
-    let shot = null;
-    let lastTime = 0;
+    <section class="card quiz-card">
+      <h2>🎉 Surprise Reveal Quiz</h2>
+      <p>Choose your favorite treat to see your destiny.</p>
+      <form id="quizForm">
+        <label><input type="radio" name="treat" value="Chocolate Bunny" required /> Chocolate Bunny</label>
+        <label><input type="radio" name="treat" value="Marshmallow Chick" /> Marshmallow Chick</label>
+        <label><input type="radio" name="treat" value="Jelly Beans" /> Jelly Beans</label>
+        <label><input type="radio" name="treat" value="Carrot Cake" /> Carrot Cake</label>
+        <button type="submit">Reveal Surprise</button>
+      </form>
+      <p id="quizResult" class="result"></p>
+    </section>
+  </main>
 
-    const shooter = { x: canvas.width / 2, y: canvas.height - 40, angle: -Math.PI / 2 };
-    let currentEgg = randEgg();
-    let nextEgg = randEgg();
+  <button class="hidden-bunny" data-bunny="1" aria-label="Hidden bunny 1">🐰</button>
+  <button class="hidden-bunny" data-bunny="2" aria-label="Hidden bunny 2">🐰</button>
+  <button class="hidden-bunny" data-bunny="3" aria-label="Hidden bunny 3">🐰</button>
+  <button class="hidden-bunny" data-bunny="4" aria-label="Hidden bunny 4">🐰</button>
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    function play(freq = 600) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.frequency.value = freq;
-      osc.type = 'triangle';
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.15);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.15);
-    }
-
-    function randEgg() {
-      const chance = Math.random();
-      if (chance < 0.1) return 'rainbow';
-      if (chance < 0.15) return 'bomb';
-      return Math.floor(Math.random() * BASE_COLORS.length);
-    }
-
-    function init() {
-      grid = [];
-      for (let r = 0; r < ROWS; r++) {
-        grid[r] = [];
-        for (let c = 0; c < COLS; c++) {
-          grid[r][c] = r < 5 ? Math.floor(Math.random() * BASE_COLORS.length) : null;
-        }
-      }
-      score = 0;
-      combo = 0;
-      shot = null;
-      currentEgg = randEgg();
-      nextEgg = randEgg();
-      updateUI();
-    }
-
-    function gridToPixel(r, c) {
-      const offset = (r % 2) * R;
-      return { x: c * R * 2 + R + offset, y: r * R * 1.8 + R };
-    }
-
-    function pixelToGrid(x, y) {
-      const r = Math.max(0, Math.min(ROWS - 1, Math.round((y - R) / (R * 1.8))));
-      const rowOffset = (r % 2) * R;
-      const c = Math.max(0, Math.min(COLS - 1, Math.round((x - R - rowOffset) / (R * 2))));
-      return { r, c };
-    }
-
-    function drawEgg(x, y, egg) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(x, y, R, 0, Math.PI * 2);
-
-      if (egg === 'bomb') {
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-        ctx.font = '20px Arial';
-        ctx.fillText('💣', x - 10, y + 7);
-      } else if (egg === 'rainbow') {
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-        ctx.font = '20px Arial';
-        ctx.fillText('🌈', x - 10, y + 7);
-      } else {
-        ctx.fillStyle = BASE_COLORS[egg];
-        ctx.fill();
-        ctx.font = '20px Arial';
-        ctx.fillText('🥚', x - 10, y + 7);
-      }
-      ctx.restore();
-    }
-
-    function drawGrid() {
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (grid[r][c] != null) {
-            const p = gridToPixel(r, c);
-            drawEgg(p.x, p.y, grid[r][c]);
-          }
-        }
-      }
-    }
-
-    function drawShooter() {
-      ctx.beginPath();
-      ctx.moveTo(shooter.x, shooter.y);
-      ctx.lineTo(shooter.x + Math.cos(shooter.angle) * 60, shooter.y + Math.sin(shooter.angle) * 60);
-      ctx.strokeStyle = '#fff';
-      ctx.stroke();
-
-      drawEgg(shooter.x, shooter.y, currentEgg);
-      drawEgg(shooter.x + 70, shooter.y, nextEgg);
-    }
-
-    function neighbors(r, c) {
-      const even = r % 2 === 0;
-      return [
-        [r, c - 1],
-        [r, c + 1],
-        [r - 1, c],
-        [r + 1, c],
-        [r - 1, c + (even ? -1 : 1)],
-        [r + 1, c + (even ? -1 : 1)]
-      ].filter(([y, x]) => y >= 0 && y < ROWS && x >= 0 && x < COLS);
-    }
-
-    function shoot() {
-      if (shot || overlay.style.display === 'flex') return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-
-      shot = {
-        x: shooter.x,
-        y: shooter.y,
-        dx: Math.cos(shooter.angle) * 8,
-        dy: Math.sin(shooter.angle) * 8,
-        egg: currentEgg
-      };
-
-      play(800);
-      currentEgg = nextEgg;
-      nextEgg = randEgg();
-    }
-
-    function updateShot() {
-      if (!shot) return;
-
-      shot.x += shot.dx;
-      shot.y += shot.dy;
-
-      if (shot.x < R || shot.x > canvas.width - R) shot.dx *= -1;
-
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (grid[r][c] == null) continue;
-          const p = gridToPixel(r, c);
-          if (Math.hypot(shot.x - p.x, shot.y - p.y) < R * 2 - 2) {
-            snapShot();
-            return;
-          }
-        }
-      }
-
-      if (shot.y < R) snapShot();
-    }
-
-    function snapShot() {
-      const { r, c } = pixelToGrid(shot.x, shot.y);
-      if (grid[r][c] == null) {
-        grid[r][c] = shot.egg;
-        resolveHit(r, c, shot.egg);
-      } else {
-        const candidates = neighbors(r, c).filter(([y, x]) => grid[y][x] == null);
-        if (candidates.length > 0) {
-          const [ny, nx] = candidates[0];
-          grid[ny][nx] = shot.egg;
-          resolveHit(ny, nx, shot.egg);
-        }
-      }
-      shot = null;
-      checkEnd();
-    }
-
-    function resolveHit(r, c, egg) {
-      if (egg === 'bomb') {
-        explode(r, c);
-        dropFloating();
-        return;
-      }
-
-      const cluster = findCluster(r, c, egg === 'rainbow' ? null : egg);
-      if (cluster.length >= 3) {
-        for (const [y, x] of cluster) grid[y][x] = null;
-        score += cluster.length * 10;
-        combo++;
-        play(500 + combo * 20);
-      } else {
-        combo = 0;
-      }
-
-      dropFloating();
-      updateUI();
-    }
-
-    function findCluster(r, c, targetColor) {
-      const stack = [[r, c]];
-      const visited = new Set();
-      const cluster = [];
-
-      while (stack.length) {
-        const [y, x] = stack.pop();
-        const key = `${y},${x}`;
-        if (visited.has(key) || !grid[y] || grid[y][x] == null) continue;
-        visited.add(key);
-
-        const egg = grid[y][x];
-        const matches =
-          targetColor == null
-            ? true
-            : egg === targetColor || egg === 'rainbow' || targetColor === 'rainbow';
-
-        if (!matches) continue;
-        cluster.push([y, x]);
-        for (const n of neighbors(y, x)) stack.push(n);
-      }
-
-      return cluster;
-    }
-
-    function explode(r, c) {
-      for (let y = r - 1; y <= r + 1; y++) {
-        for (let x = c - 1; x <= c + 1; x++) {
-          if (grid[y] && grid[y][x] != null) {
-            grid[y][x] = null;
-          }
-        }
-      }
-      score += 50;
-      combo++;
-      play(300);
-      updateUI();
-    }
-
-    function dropFloating() {
-      const connected = new Set();
-
-      function dfs(y, x) {
-        const key = `${y},${x}`;
-        if (connected.has(key) || !grid[y] || grid[y][x] == null) return;
-        connected.add(key);
-        for (const [ny, nx] of neighbors(y, x)) dfs(ny, nx);
-      }
-
-      for (let c = 0; c < COLS; c++) {
-        if (grid[0][c] != null) dfs(0, c);
-      }
-
-      let dropped = 0;
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (grid[r][c] != null && !connected.has(`${r},${c}`)) {
-            grid[r][c] = null;
-            dropped++;
-          }
-        }
-      }
-
-      if (dropped > 0) {
-        score += dropped * 5;
-      }
-      updateUI();
-    }
-
-    function updateUI() {
-      document.getElementById('score').textContent = score;
-      document.getElementById('combo').textContent = combo;
-    }
-
-    function checkEnd() {
-      for (let r = ROWS - 2; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (grid[r][c] != null) {
-            showEnd('💀 Game Over');
-            return;
-          }
-        }
-      }
-
-      let any = false;
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (grid[r][c] != null) any = true;
-        }
-      }
-      if (!any) showEnd('🎉 You Win!');
-    }
-
-    function showEnd(text) {
-      document.getElementById('endText').textContent = text;
-      overlay.style.display = 'flex';
-    }
-
-    function restart() {
-      overlay.style.display = 'none';
-      init();
-    }
-
-    canvas.addEventListener('mousemove', (e) => {
-      const r = canvas.getBoundingClientRect();
-      shooter.angle = Math.atan2(e.clientY - r.top - shooter.y, e.clientX - r.left - shooter.x);
-      shooter.angle = Math.min(-0.1, Math.max(-Math.PI + 0.1, shooter.angle));
-    });
-
-    canvas.addEventListener('click', shoot);
-    canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      shoot();
-    }, { passive: false });
-
-    function loop(time = 0) {
-      if (time - lastTime < 16) {
-        requestAnimationFrame(loop);
-        return;
-      }
-      lastTime = time;
-
-      if (overlay.style.display === 'flex') return;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawGrid();
-      updateShot();
-      if (shot) drawEgg(shot.x, shot.y, shot.egg);
-      drawShooter();
-
-      requestAnimationFrame(loop);
-    }
-
-    init();
-    requestAnimationFrame(loop);
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
