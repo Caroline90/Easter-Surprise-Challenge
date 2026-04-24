@@ -1,0 +1,110 @@
+:root {
+  --bg: #fff7ef;
+  --card: #ffffff;
+  --ink: #42210b;
+  --accent: #ff85a1;
+  --accent-2: #a86cf7;
+  --good: #1d8f54;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(180deg, var(--bg), #ffe9d5);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 1.5rem 1rem 0.75rem;
+}
+
+.grid {
+  width: min(980px, 92vw);
+  margin: 0 auto 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 2px solid #ffd3b0;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 18px rgb(0 0 0 / 8%);
+}
+
+.icon-btn {
+  font-size: 3rem;
+  background: #fff;
+  border: 2px solid #ffd3b0;
+  border-radius: 14px;
+  cursor: pointer;
+  padding: 0.3rem 0.8rem;
+  transition: transform 0.2s ease;
+}
+
+.icon-btn:hover {
+  transform: scale(1.06);
+}
+
+.quiz-card form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.quiz-card button[type="submit"] {
+  border: none;
+  background: var(--accent-2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.result {
+  font-weight: 600;
+  color: var(--good);
+}
+
+.hidden {
+  display: none;
+}
+
+.hidden-bunny {
+  position: fixed;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.2;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hidden-bunny:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.hidden-bunny[data-bunny="1"] {
+  left: 8px;
+  bottom: 16px;
+}
+
+.hidden-bunny[data-bunny="2"] {
+  right: 12px;
+  top: 110px;
+}
+
+.hidden-bunny[data-bunny="3"] {
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+}
