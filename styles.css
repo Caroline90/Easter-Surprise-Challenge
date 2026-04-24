@@ -108,3 +108,8 @@ header {
   top: 8px;
   transform: translateX(-50%);
 }
+
+.hidden-bunny[data-bunny="4"] {
+  right: 42%;
+  bottom: 10px;
+}
