@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easter Surprise Challenge</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>🐣 Easter Programming Challenge</h1>
+    <p>Find and trigger every surprise on the page!</p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>1) Cracking Egg</h2>
+      <button id="eggButton" class="icon-btn" aria-label="Crack Easter egg">🥚</button>
+      <p id="eggStatus">Click the egg to crack it open.</p>
+    </section>
+
+    <section class="card">
+      <h2>2) Mystery Box</h2>
+      <button id="boxButton" class="icon-btn" aria-label="Open mystery box">🎁</button>
+      <p id="boxStatus">What gift is inside?</p>
+    </section>
+
+    <section class="card">
+      <h2>3) Greeting Card</h2>
+      <button id="cardButton" class="icon-btn" aria-label="Open greeting card">💌</button>
+      <p id="cardStatus">Open the card for a hidden message.</p>
+    </section>
+
+    <section class="card">
+      <h2>4) Mini Egg Hunt</h2>
+      <p>Find and click all hidden bunnies around the page:</p>
+      <p id="huntStatus">0 / 3 bunnies found.</p>
+      <div id="huntReward" class="hidden">🐰 You found them all! Bonus chocolate unlocked.</div>
+    </section>
+
+    <section class="card quiz-card">
+      <h2>5) Surprise Reveal Quiz</h2>
+      <p>Pick your favorite Easter treat:</p>
+      <form id="quizForm">
+        <label><input type="radio" name="treat" value="chocolate egg" required /> Chocolate egg</label>
+        <label><input type="radio" name="treat" value="marshmallow chick" /> Marshmallow chick</label>
+        <label><input type="radio" name="treat" value="carrot cake" /> Carrot cake</label>
+        <button type="submit">Reveal result</button>
+      </form>
+      <p id="quizResult" class="result"></p>
+    </section>
+  </main>
+
+  <button class="hidden-bunny" data-bunny="1" aria-label="Hidden bunny 1">🐰</button>
+  <button class="hidden-bunny" data-bunny="2" aria-label="Hidden bunny 2">🐰</button>
+  <button class="hidden-bunny" data-bunny="3" aria-label="Hidden bunny 3">🐰</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
