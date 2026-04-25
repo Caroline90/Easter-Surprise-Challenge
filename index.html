@@ -9,56 +9,60 @@
 <body>
   <header>
     <h1>🐣 Easter Surprise Challenge</h1>
-    <p>Click around to crack secrets, discover gifts, and unlock the final surprise!</p>
+    <p>A playful <strong>Mystery Egg Hunt</strong> where each egg unlocks clues, then one final reveal.</p>
   </header>
 
-  <main class="grid">
-    <section class="card">
-      <h2>🥚 Crack the Easter Egg</h2>
-      <p>Tap the egg until it finally opens.</p>
-      <button id="eggButton" class="icon-btn" aria-label="Crack egg">🥚</button>
-      <p id="eggStatus" class="result">The shell is unbroken... for now.</p>
+  <main class="layout">
+    <section class="card idea-card">
+      <h2>1) Wall of Inspiration → Chosen Idea</h2>
+      <ul class="inspiration-list">
+        <li>Easter Surprise Card</li>
+        <li><strong>Mystery Egg Hunt</strong> ✅</li>
+        <li>Gift Reveal Box</li>
+        <li>Easter Personality Quiz</li>
+      </ul>
+      <p>
+        I chose <strong>Mystery Egg Hunt</strong> and expanded it into a mini adventure. Players tap eggs to discover clues,
+        then unlock a sealed golden egg with a final animation + message. It starts simple and gets more magical as they interact.
+      </p>
     </section>
 
     <section class="card">
-      <h2>🎁 Mystery Gift Box</h2>
-      <p>Open the box to reveal a hidden gift.</p>
-      <button id="boxButton" class="icon-btn" aria-label="Open mystery box">📦</button>
-      <p id="boxStatus" class="result">What could be inside?</p>
+      <h2>2) Reveal Moment Sketch</h2>
+      <p>
+        <strong>First view:</strong> the user sees pastel cards, three mystery eggs, and a locked golden egg. <br />
+        <strong>Interaction:</strong> each egg click reveals a clue and fills progress. Once all clues are found, the final egg cracks open,
+        confetti appears, and a celebration message is revealed.
+      </p>
+      <p class="note">Bonus hidden trigger: scroll down to wake up the bunny guide.</p>
     </section>
 
-    <section class="card">
-      <h2>💌 Secret Greeting Card</h2>
-      <p>Open the card and find the hidden Easter message.</p>
-      <button id="cardButton" class="icon-btn" aria-label="Open greeting card">💌</button>
-      <p id="cardStatus" class="result">A note is waiting inside...</p>
+    <section class="card hunt-card">
+      <h2>3) Hunt the Clues</h2>
+      <p>Click each egg to reveal one hidden clue.</p>
+      <div class="egg-row">
+        <button class="egg-btn" data-egg="1" aria-label="Mystery egg 1">🥚</button>
+        <button class="egg-btn" data-egg="2" aria-label="Mystery egg 2">🥚</button>
+        <button class="egg-btn" data-egg="3" aria-label="Mystery egg 3">🥚</button>
+      </div>
+      <p id="huntStatus" class="result">Clues found: 0 / 3</p>
+      <ul id="clueList" class="clue-list"></ul>
     </section>
 
-    <section class="card">
-      <h2>🐰 Mini Egg Hunt</h2>
-      <p>Find all hidden bunnies on the page.</p>
-      <p id="huntStatus" class="result">0 / 4 bunnies found.</p>
-      <p id="huntReward" class="hidden result">🎊 Hunt complete! You unlocked a rainbow mega-egg!</p>
+    <section class="card final-card locked" id="finalCard">
+      <h2>Golden Egg Finale</h2>
+      <p id="finalHint">Find all 3 clues to unlock this final surprise.</p>
+      <button id="finalEggButton" class="icon-btn" aria-label="Open final golden egg" disabled>🥇🥚</button>
+      <p id="finalReveal" class="result hidden">🎉 Surprise unlocked: “You are the Official Keeper of Easter Wonder!”</p>
+      <div id="confetti" class="confetti hidden" aria-hidden="true"></div>
     </section>
 
-    <section class="card quiz-card">
-      <h2>🎉 Surprise Reveal Quiz</h2>
-      <p>Choose your favorite treat to see your destiny.</p>
-      <form id="quizForm">
-        <label><input type="radio" name="treat" value="Chocolate Bunny" required /> Chocolate Bunny</label>
-        <label><input type="radio" name="treat" value="Marshmallow Chick" /> Marshmallow Chick</label>
-        <label><input type="radio" name="treat" value="Jelly Beans" /> Jelly Beans</label>
-        <label><input type="radio" name="treat" value="Carrot Cake" /> Carrot Cake</label>
-        <button type="submit">Reveal Surprise</button>
-      </form>
-      <p id="quizResult" class="result"></p>
+    <section class="card bunny-card" id="bunnyCard">
+      <h2>Hidden Surprise Trigger (Scroll)</h2>
+      <p>Scroll past 55% of the page to reveal the sleepy bunny guide.</p>
+      <p id="bunnyStatus" class="result">😴 Bunny guide is snoozing...</p>
     </section>
   </main>
-
-  <button class="hidden-bunny" data-bunny="1" aria-label="Hidden bunny 1">🐰</button>
-  <button class="hidden-bunny" data-bunny="2" aria-label="Hidden bunny 2">🐰</button>
-  <button class="hidden-bunny" data-bunny="3" aria-label="Hidden bunny 3">🐰</button>
-  <button class="hidden-bunny" data-bunny="4" aria-label="Hidden bunny 4">🐰</button>
 
   <script src="script.js"></script>
 </body>
