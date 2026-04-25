@@ -5,6 +5,7 @@
   --accent: #ff85a1;
   --accent-2: #a86cf7;
   --good: #1d8f54;
+  --line: #ffd3b0;
 }
 
 * {
@@ -24,49 +25,63 @@ header {
   padding: 1.5rem 1rem 0.75rem;
 }
 
-.grid {
+.layout {
   width: min(980px, 92vw);
   margin: 0 auto 2rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   gap: 1rem;
 }
 
 .card {
   background: var(--card);
-  border: 2px solid #ffd3b0;
+  border: 2px solid var(--line);
   border-radius: 16px;
   padding: 1rem;
   box-shadow: 0 8px 18px rgb(0 0 0 / 8%);
 }
 
+.inspiration-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.note {
+  color: #6e37c6;
+  font-weight: 600;
+}
+
+.egg-row {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.egg-btn,
 .icon-btn {
-  font-size: 3rem;
+  font-size: 2.6rem;
   background: #fff;
-  border: 2px solid #ffd3b0;
+  border: 2px solid var(--line);
   border-radius: 14px;
   cursor: pointer;
   padding: 0.3rem 0.8rem;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.egg-btn:hover,
 .icon-btn:hover {
   transform: scale(1.06);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 10%);
 }
 
-.quiz-card form {
-  display: grid;
-  gap: 0.5rem;
+.egg-btn[data-found="true"] {
+  opacity: 0.8;
 }
 
-.quiz-card button[type="submit"] {
-  border: none;
-  background: var(--accent-2);
-  color: #fff;
-  border-radius: 8px;
-  padding: 0.5rem 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
+.clue-list {
+  margin: 0.7rem 0 0;
+  padding-left: 1.2rem;
+  min-height: 4.2rem;
 }
 
 .result {
@@ -74,42 +89,25 @@ header {
   color: var(--good);
 }
 
+.final-card.locked {
+  opacity: 0.8;
+}
+
+.icon-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.confetti {
+  margin-top: 0.8rem;
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+
 .hidden {
   display: none;
 }
 
-.hidden-bunny {
-  position: fixed;
-  border: none;
-  background: transparent;
-  font-size: 1.5rem;
-  cursor: pointer;
-  opacity: 0.2;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.hidden-bunny:hover {
-  opacity: 1;
-  transform: scale(1.2);
-}
-
-.hidden-bunny[data-bunny="1"] {
-  left: 8px;
-  bottom: 16px;
-}
-
-.hidden-bunny[data-bunny="2"] {
-  right: 12px;
-  top: 110px;
-}
-
-.hidden-bunny[data-bunny="3"] {
-  left: 50%;
-  top: 8px;
-  transform: translateX(-50%);
-}
-
-.hidden-bunny[data-bunny="4"] {
-  right: 42%;
-  bottom: 10px;
+.bunny-awake {
+  color: #7c35df;
 }
